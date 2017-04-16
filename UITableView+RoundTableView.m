@@ -22,11 +22,15 @@
         CGRect resetFrame = CGRectMake(0, 0, orgWidth - 30, orgHeight);
         cell.frame = resetFrame;
         cell.center = orgCenter;
-        if (indexPath.row == 0 || indexPath.row == sumRow - 1) {
-            cell.layer.cornerRadius = 5;
-        }else{
-            cell.layer.cornerRadius = 0;
+        if (indexPath.row == 0) {
+            [self drawCell:cell rectCorner:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadius:5];
         }
+        else if(indexPath.row == sumRow - 1){
+            [self drawCell:cell rectCorner:UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadius:5];
+        }else{
+            [self drawCell:cell rectCorner:UIRectCornerTopLeft | UIRectCornerTopRight | UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadius:0];
+        }
+        cell.clipsToBounds = YES;
         cell.hidden = NO;
     }
 }
@@ -39,13 +43,25 @@
     CGRect resetFrame = CGRectMake(0, 0, orgWidth - 30, orgHeight);
     cell.frame = resetFrame;
     cell.center = orgCenter;
-    if (indexPath.row == 0 || indexPath.row == sumRow - 1) {
-        cell.layer.cornerRadius = 5;
-    }else{
-        cell.layer.cornerRadius = 0;
+    if (indexPath.row == 0) {
+        [self drawCell:cell rectCorner:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadius:5];
     }
-    
+    else if (indexPath.row == sumRow - 1){
+        [self drawCell:cell rectCorner:UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadius:5];
+    }else{
+        [self drawCell:cell rectCorner:UIRectCornerTopLeft | UIRectCornerTopRight | UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadius:0];
+    }
+    cell.clipsToBounds = YES;
     cell.hidden = NO;
+}
+
+- (void)drawCell:(UITableViewCell *)cell rectCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius{
+    UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:cell.bounds byRoundingCorners:corner cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
+    CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
+    maskLayer.frame = cell.bounds;
+    maskLayer.path = maskPath.CGPath;
+    cell.layer.mask = maskLayer;
+    
 }
 
 @end
